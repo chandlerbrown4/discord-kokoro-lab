@@ -1,0 +1,32 @@
+[build-system]
+requires = ["setuptools>=64"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "discord-kokoro-lab"
+version = "0.4.0"
+description = "Local speaker diarization, F5 and Kokoro speech synthesis, and microphone effects."
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = []
+
+[project.optional-dependencies]
+asr = ["faster-whisper==1.2.1"]
+diarize = ["sherpa-onnx==2.0.1", "numpy>=1.24"]
+f5 = [
+  "f5-tts-mlx==0.2.6; sys_platform == 'darwin' and platform_machine == 'arm64'",
+  "mlx==0.32.4; sys_platform == 'darwin' and platform_machine == 'arm64'",
+  "vocos-mlx==0.0.7; sys_platform == 'darwin' and platform_machine == 'arm64'",
+]
+kokoro = ["inno-kokoro[torch]==0.4.0", "kokoro==0.9.4"]
+live = ["sounddevice==0.5.6"]
+vc = ["torch>=2.7,<3", "wavmark==0.0.3", "librosa>=0.11", "numpy>=1.24", "huggingface-hub"]
+
+[project.scripts]
+voice-lab = "voice_lab.__main__:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-data]
+voice_lab = ["beta_studio.html"]

@@ -1,0 +1,6 @@
+mlx-audio==0.6.6
+mlx==0.32.4
+transformers==5.23.0
+faster-whisper==1.2.1
+sherpa-onnx==2.0.1
+soundfile==0.14.0

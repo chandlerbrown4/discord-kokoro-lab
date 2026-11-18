@@ -1,0 +1,995 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Call studio · Voice Lab</title>
+    <style>
+      :root {
+        color-scheme: light;
+        --ink: #152922;
+        --soft: #51685c;
+        --line: #cfdad1;
+        --paper: #fbfdf9;
+        --green: #126447;
+        --dark: #123d30;
+        --mint: #b9f5be;
+        --bg: #f1f5ee;
+        --warn: #903c25;
+      }
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        margin: 0;
+        background: var(--bg);
+        color: var(--ink);
+        font:
+          15px/1.48 Inter,
+          -apple-system,
+          BlinkMacSystemFont,
+          "Segoe UI",
+          sans-serif;
+      }
+      button,
+      select,
+      input {
+        font: inherit;
+      }
+      button,
+      .button {
+        cursor: pointer;
+        font-weight: 650;
+        color: var(--ink);
+        border: 1px solid var(--line);
+        background: var(--paper);
+        border-radius: 8px;
+        padding: 9px 14px;
+        text-decoration: none;
+        display: inline-flex;
+        gap: 8px;
+        justify-content: center;
+        align-items: center;
+      }
+      button:disabled {
+        cursor: default;
+        opacity: 0.43;
+      }
+      button:focus-visible,
+      select:focus-visible,
+      a:focus-visible,
+      input:focus-visible + label {
+        outline: 3px solid #479979;
+        outline-offset: 2px;
+      }
+      .primary {
+        background: var(--green);
+        border-color: var(--green);
+        color: white;
+      }
+      .small {
+        font-size: 13px;
+        padding: 6px 10px;
+      }
+      .danger {
+        color: #822f1c;
+      }
+      .text {
+        background: none;
+        border: 0;
+        color: var(--green);
+        padding: 5px 0;
+      }
+      header {
+        background: var(--dark);
+        color: white;
+      }
+      nav,
+      main {
+        max-width: 1180px;
+        margin: auto;
+        padding: 0 clamp(18px, 4vw, 46px);
+      }
+      nav {
+        height: 61px;
+        display: flex;
+        align-items: center;
+        gap: 11px;
+      }
+      nav b {
+        font-size: 18px;
+        letter-spacing: -0.4px;
+      }
+      nav .quit {
+        margin-left: auto;
+        color: #e6f3e9;
+        border-color: #477461;
+        background: transparent;
+      }
+      .mark {
+        width: 26px;
+        height: 28px;
+        display: flex;
+        gap: 3px;
+        align-items: center;
+      }
+      .mark i {
+        width: 4px;
+        background: var(--mint);
+        border-radius: 3px;
+      }
+      .mark i:nth-child(1) {
+        height: 10px;
+      }
+      .mark i:nth-child(2) {
+        height: 21px;
+      }
+      .mark i:nth-child(3) {
+        height: 28px;
+      }
+      .mark i:nth-child(4) {
+        height: 15px;
+      }
+      main {
+        padding-bottom: 44px;
+      }
+      .hero {
+        display: flex;
+        align-items: end;
+        justify-content: space-between;
+        gap: 18px;
+        margin: 33px 0 22px;
+      }
+      .hero h1 {
+        font-size: clamp(35px, 5vw, 51px);
+        letter-spacing: -0.06em;
+        line-height: 1.04;
+        margin: 0 0 6px;
+      }
+      .muted,
+      .note {
+        color: var(--soft);
+      }
+      .note {
+        font-size: 13px;
+        margin: 8px 0;
+      }
+      .library {
+        display: flex;
+        gap: 7px;
+        align-items: center;
+        flex-wrap: wrap;
+      }
+      .library select {
+        width: auto;
+        min-width: 155px;
+        max-width: 220px;
+      }
+      .card {
+        background: var(--paper);
+        border: 1px solid var(--line);
+        border-radius: 14px;
+        padding: 20px;
+        margin: 0 0 15px;
+      }
+      .strip {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 18px;
+        border-left: 4px solid var(--green);
+      }
+      .tag {
+        display: inline-flex;
+        align-items: center;
+        gap: 7px;
+        font-size: 13px;
+        font-weight: 650;
+        color: var(--soft);
+      }
+      .tag:before {
+        content: "";
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background: #8ca094;
+      }
+      .tag.on:before {
+        background: #208354;
+        box-shadow: 0 0 0 3px #ddf3e1;
+      }
+      .tag.error:before {
+        background: #bb5231;
+      }
+      h2,
+      h3,
+      p {
+        margin: 0;
+      }
+      h2 {
+        font-size: 19px;
+        letter-spacing: -0.035em;
+      }
+      h3 {
+        font-size: 15px;
+      }
+      .headline {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 10px;
+      }
+      .grid {
+        display: grid;
+        grid-template-columns: minmax(0, 1.35fr) minmax(300px, 1fr);
+        gap: 16px;
+      }
+      .empty {
+        padding: 27px 0 15px;
+        color: var(--soft);
+      }
+      .speakers {
+        display: grid;
+        gap: 8px;
+        margin-top: 13px;
+      }
+      .speaker {
+        display: block;
+        width: 100%;
+        text-align: left;
+        padding: 13px;
+        border: 1px solid var(--line);
+        background: white;
+      }
+      .speaker.selected {
+        border-color: var(--green);
+        background: #eef7ee;
+        box-shadow: inset 3px 0 var(--green);
+      }
+      .speaker .row {
+        display: flex;
+        justify-content: space-between;
+        gap: 8px;
+        align-items: center;
+      }
+      .speaker .stage {
+        font-size: 12px;
+        color: var(--green);
+        font-weight: 650;
+      }
+      .speaker small {
+        display: block;
+        margin-top: 4px;
+        font-weight: 450;
+        color: var(--soft);
+      }
+      progress {
+        width: 100%;
+        height: 6px;
+        accent-color: var(--green);
+        display: block;
+        margin-top: 8px;
+      }
+      .actions {
+        display: flex;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 8px;
+        margin-top: 12px;
+      }
+      .section {
+        border-top: 1px solid var(--line);
+        margin-top: 17px;
+        padding-top: 15px;
+      }
+      .field {
+        display: block;
+        color: var(--soft);
+        font-size: 13px;
+        font-weight: 650;
+        margin: 11px 0 0;
+      }
+      select {
+        display: block;
+        width: 100%;
+        height: 38px;
+        background: white;
+        border: 1px solid var(--line);
+        border-radius: 7px;
+        color: var(--ink);
+        padding: 4px 8px;
+      }
+      .error-msg {
+        color: var(--warn);
+      }
+      .message:empty {
+        display: none;
+      }
+      .message {
+        color: var(--soft);
+        min-height: 1.4em;
+        margin: 5px 0 9px;
+      }
+      .live-note {
+        border-left: 3px solid #86ad93;
+        padding-left: 10px;
+        margin-top: 13px;
+      }
+      .player {
+        width: 100%;
+        margin-top: 5px;
+      }
+      .file {
+        position: absolute;
+        opacity: 0;
+        width: 1px;
+        height: 1px;
+      }
+      .upload {
+        font-size: 13px;
+        cursor: pointer;
+        text-decoration: underline;
+        color: var(--green);
+        padding: 4px;
+      }
+      a {
+        color: var(--green);
+      }
+      [hidden] {
+        display: none !important;
+      }
+      @media (max-width: 760px) {
+        .grid {
+          grid-template-columns: 1fr;
+        }
+        .hero {
+          align-items: start;
+          flex-direction: column;
+        }
+        .strip {
+          align-items: start;
+          flex-wrap: wrap;
+        }
+        .card {
+          padding: 16px;
+        }
+        .hero {
+          margin-top: 24px;
+        }
+        .library select {
+          width: 180px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <nav>
+        <span class="mark" aria-hidden="true"><i></i><i></i><i></i><i></i></span><b>Voice Lab</b
+        ><button id="quit" class="small quit">Quit studio</button>
+      </nav>
+    </header>
+    <main>
+      <div class="hero">
+        <div>
+          <h1>Call studio</h1>
+          <p class="muted">Collect voices from Discord and preview them on your mic.</p>
+        </div>
+        <div class="library">
+          <select id="sessions" aria-label="Saved calls"></select
+          ><button id="new" class="small">New call</button>
+          <input type="file" id="voicefile" accept="audio/*" class="file" /><label for="voicefile" class="button small">Import recording…</label>
+        </div>
+      </div>
+      <section class="card strip">
+        <div>
+          <span id="capture-status" class="tag">Capture off</span>
+          <h2>Discord playback</h2>
+          <p id="capture-info" class="note">Open the Discord desktop app and join the call.</p>
+        </div>
+        <button id="capture" class="primary">Attach to Discord</button>
+      </section>
+      <p id="notice" class="message" role="status"></p>
+      <div class="grid">
+        <div>
+          <section class="card">
+            <div class="headline">
+              <h2>Call speakers</h2>
+              <button id="notify" class="text small">Notify when ready</button>
+            </div>
+            <p id="analysis" class="note"></p>
+            <div id="speakers" class="speakers"></div>
+            <p id="empty" class="empty">Speakers appear here as the call picks up clean speech.</p>
+            <div id="audition" class="section" hidden>
+              <h3 id="selected-name"></h3>
+              <p id="voice-info" class="note"></p>
+              <div class="actions">
+                <button id="listen">Hear caller</button><button id="preview">Compare with my mic</button>
+              </div>
+              <h3>Text voice</h3>
+              <div class="actions"><select id="build-size" aria-label="Build size"><option value="preview">Quick preview · 12 lines</option><option value="full">Full build · 128 lines</option></select>
+                <button id="build-voice">Build text voice</button><button id="pause-build" hidden>Pause</button><button id="latest-build" hidden>Build with latest clips</button></div>
+              <label id="auto-label" hidden><input type="checkbox" id="auto-updates"> Improve automatically with new speech</label>
+              <p class="note" id="update-info" hidden></p>
+              <p class="note" id="text-info"></p>
+              <button id="review-voice" hidden>Compare original and generated</button>
+              <a class="button small" id="save-voice" hidden>Export voice</a>
+              <button id="hear-alternate" hidden>Hear alternate version</button>
+              <div class="actions"><input id="voice-line" aria-label="Text to speak" placeholder="Enter an English line" maxlength="400">
+                <button id="speak-line">Generate and play</button><button id="replay-line" hidden>Replay line</button>
+                <a class="button small" id="save-line" hidden>Save WAV</a></div>
+              <div id="playbox" hidden>
+                <p class="note" id="play-label"></p>
+                <audio controls class="player" id="player"></audio>
+              </div>
+            </div>
+          </section>
+          <p class="note">
+            Use calls and voices you have permission to record and recreate. Speaker labels are estimated from
+            the audio.
+          </p>
+        </div>
+        <div>
+          <section class="card">
+            <div class="headline">
+              <h2>Microphone &amp; output</h2>
+              <button id="refresh" class="text small">Refresh devices</button>
+            </div>
+            <label class="field" for="mic">Your physical microphone</label
+            ><select id="mic"></select>
+            <div class="actions">
+              <button id="record" class="small">Record 6-second sample</button
+              ><input type="file" id="micfile" accept="audio/*" class="file" /><label
+                for="micfile"
+                class="upload"
+                >Use a mic recording</label
+              >
+            </div>
+            <p id="mic-info" class="note">Speak normally so the converter can calibrate to your voice.</p>
+            <div class="section">
+              <label class="field" for="cable">Virtual output to Discord</label
+              ><select id="cable"></select>
+              <p id="route-guide" class="note"></p>
+              <div id="driver" class="actions" hidden>
+                <button id="install-driver" class="small">Open BlackHole installer</button
+                ><a
+                  id="cable-help"
+                  href="https://existential.audio/blackhole/"
+                  target="_blank"
+                  rel="noreferrer"
+                  >Driver information</a
+                >
+              </div>
+              <p class="note" id="driver-message"></p>
+              <div class="actions">
+                <button id="check" class="small">Check devices</button
+                ><button id="use" class="primary">Use selected voice</button
+                ><button id="normal" class="small" hidden>Use my normal voice</button
+                ><button id="stop-route" class="danger" hidden>Stop output</button>
+              </div>
+              <p id="route-info" class="note live-note">Live output is off.</p>
+            </div>
+          </section>
+          <section class="card">
+            <div class="headline">
+              <h3>Speech models</h3>
+              <span id="models" class="tag"></span>
+            </div>
+            <p class="note" id="model-info"></p>
+            <button id="retry" class="text small" hidden>Retry setup or analysis</button>
+          </section>
+        </div>
+      </div>
+    </main>
+    <script>
+      const by = (id) => document.getElementById(id),
+        status = by("notice");
+      let state = null,
+        selected = null,
+        session = null,
+        devices = [],
+        busy = false,
+        checking = false,
+        playing = null,
+        lineRequest = null,
+        previewRequest = null,
+        seen = new Set(),
+        notify = false,
+        closed = false,
+        pollTimer,
+        previousState = "",
+        stateVersion = 0,
+        rev = 0;
+      const hot = (s) => s === "running" || s === "starting",
+        ready = (s) => s && ["optimized", "reference_only"].includes(s.model_status);
+      function msg(s, bad = false) {
+        status.textContent = s;
+        status.classList.toggle("error-msg", bad);
+      }
+      async function request(path, options = {}) {
+        const r = await fetch(path, { cache: "no-store", ...options });
+        if (!r.ok) {
+          let m = await r.text();
+          try {
+            m = JSON.parse(m).error;
+          } catch (e) {}
+          throw Error(m || "Local request failed.");
+        }
+        return r;
+      }
+      function options(select, rows, placeholder) {
+        let last = select.value;
+        const names = JSON.stringify(rows);
+        if (select.dataset.rows === names) return;
+        select.dataset.rows = names;
+        select.replaceChildren(new Option(placeholder, ""), ...rows.map((x) => new Option(x[1], x[0])));
+        if (rows.some((x) => String(x[0]) === last)) select.value = last;
+      }
+      function stamp(id) {
+        if (!id) return "Current call";
+        const m = id.match(/^(\d{4})(\d\d)(\d\d)T(\d\d)(\d\d)(\d\d)/);
+        if (!m) return id;
+        return new Date(
+          m[1] + "-" + m[2] + "-" + m[3] + "T" + m[4] + ":" + m[5] + ":" + m[6] + "Z",
+        ).toLocaleString([], {
+          month: "short",
+          day: "numeric",
+          hour: "numeric",
+          minute: "2-digit",
+          second: "2-digit",
+        });
+      }
+      function resetAudio() {
+        rev++;
+        by("player").pause();
+        by("player").removeAttribute("src");
+        if (playing) URL.revokeObjectURL(playing);
+        playing = null;
+        by("playbox").hidden = true;
+        previewRequest = null;
+        lineRequest = null;
+      }
+      async function play(role, id) {
+        const epoch = ++rev,
+          call = state.call;
+        const blob = await (
+          await request("/audio/" + encodeURIComponent(call) + "/" + role + "/" + encodeURIComponent(id))
+        ).blob();
+        if (epoch !== rev || id !== selected || call !== state.call) return;
+        const next = URL.createObjectURL(blob);
+        if (playing) URL.revokeObjectURL(playing);
+        playing = next;
+        by("player").src = next;
+        by("play-label").textContent =
+          ({sample: "Original caller sample", preview: "Your microphone first, converted voice second",
+            review: "Original first, then generated speech on the same line",
+            "alternate-review": "Original first, then the alternate text voice", tts: "Generated speech"})[role];
+        by("playbox").hidden = false;
+        by("player")
+          .play()
+          .catch(() => {});
+      }
+      function stage(s) {
+        return (
+          {
+            collecting: "Collecting speech",
+            ready_to_fit: "Preparing voice",
+            optimized: "Fitted voice ready",
+            reference_only: "Reference voice ready",
+            needs_more_audio: "More speech needed",
+          }[s.model_status] || "Collecting speech"
+        );
+      }
+      function speakerRow(s) {
+        const b = document.createElement("button");
+        b.className = "speaker";
+        b.dataset.id = s.id;
+        const row = document.createElement("span");
+        row.className = "row";
+        row.append(document.createElement("strong"), document.createElement("span"));
+        row.lastChild.className = "stage";
+        b.append(row, document.createElement("progress"), document.createElement("small"));
+        b.onclick = () => {
+          resetAudio();
+          selected = s.id;
+          draw();
+        };
+        return b;
+      }
+      function draw() {
+        if (!state) return;
+        const voices = state.voices.speakers;
+        if (session !== state.call) {
+          resetAudio();
+          session = state.call;
+          selected = null;
+          seen = new Set();
+          by("speakers").replaceChildren();
+        }
+        options(
+          by("sessions"),
+          state.calls.map((id) => [id, stamp(id)]),
+          "Select a saved call",
+        );
+        by("sessions").value = session || "";
+        if (!voices.some((s) => s.id === selected)) selected = (voices[0] || {}).id || null;
+        const chosen = voices.find((s) => s.id === selected),
+          cap = hot(state.capture.state),
+          route = hot(state.route.state),
+          checked = state.route.state === "checked";
+        const loaded = state.setup.state === "ready";
+        const frozen = busy || state.previewing || state.calibrating;
+        by("capture-status").textContent =
+          {
+            starting: "Attaching…",
+            running: "Collecting audio",
+            error: "Capture needs attention",
+            stopped: "Capture stopped",
+          }[state.capture.state] || "Capture off";
+        by("capture-status").className =
+          "tag " + (cap ? "on" : state.capture.state === "error" ? "error" : "");
+        by("capture").textContent = cap ? "Stop capture" : "Attach to Discord";
+        by("capture").disabled = busy;
+        by("capture-info").textContent = cap
+          ? "Capturing Discord playback, including its sounds. Stop capture when you leave the call."
+          : state.capture.state === "error"
+            ? state.capture.message
+            : "Open Discord on this Mac and join the call you want to collect.";
+        by("new").disabled = by("sessions").disabled = frozen || cap || route || !!state.analysis;
+        by("analysis").textContent =
+          state.analysis ||
+          (state.analysis_errors || [])[0] ||
+          state.text_update_error ||
+          (cap
+            ? "Waiting for the next audio segment…"
+            : voices.length
+              ? "Select a speaker to listen or use their voice."
+              : "Each voice needs several clear, separate turns.");
+        by("empty").hidden = !!voices.length;
+        by("audition").hidden = !chosen;
+        for (const s of voices) {
+          let b = Array.from(by("speakers").children).find((e) => e.dataset.id === s.id);
+          if (!b) {
+            b = speakerRow(s);
+            by("speakers").append(b);
+          }
+          b.classList.toggle("selected", s.id === selected);
+          b.setAttribute("aria-pressed", s.id === selected);
+          b.children[0].children[0].textContent = s.name;
+          b.children[0].children[1].textContent = stage(s);
+          const fraction = Math.min(
+            1,
+            s.usable_seconds / s.required_seconds,
+            s.clip_count / s.required_clips,
+          );
+          b.children[1].value = ready(s) ? 1 : fraction;
+          b.children[1].max = 1;
+          b.children[1].setAttribute("aria-label", s.name + " enrollment progress");
+          b.children[2].textContent =
+            Math.floor(s.usable_seconds) +
+            " s of clean speech · " +
+            s.clip_count +
+            " clips" +
+            (s.model_status === "collecting"
+              ? " · Goal " + s.required_seconds + " s and " + s.required_clips + " clips"
+              : "");
+          if (ready(s) && !seen.has(s.id)) {
+            seen.add(s.id);
+            if (notify && window.Notification && Notification.permission === "granted")
+              new Notification(s.name + " is ready", {
+                body: "Open Voice Lab to hear the local comparison.",
+              });
+          }
+        }
+        if (chosen) {
+          by("selected-name").textContent = chosen.name;
+          by("voice-info").textContent =
+            chosen.model_status === "optimized"
+              ? "The fitted voice improved the held-out speaker check. Listen for likeness and naturalness."
+              : chosen.model_status === "reference_only"
+                ? "The reference voice was kept after the fit check. Listen before routing it."
+                : chosen.model_status === "needs_more_audio"
+                  ? "The held-out voice check was weak. Collect more clean turns for another fit; a local audition is available."
+                  : "Keep collecting isolated speech. Overlapping, repeated, or unclear turns may be skipped.";
+          if (
+            chosen.model_status === "collecting" &&
+            chosen.usable_seconds >= chosen.required_seconds &&
+            chosen.clip_count >= chosen.required_clips
+          )
+            by("voice-info").textContent =
+              "There is enough audio by length, but these clips have inconsistent speaker characteristics. More isolated speech is needed.";
+          if (state.preview === chosen.id && state.preview_score) {
+            const q = state.preview_score;
+            by("voice-info").textContent +=
+              " Your converted mic scored " +
+              q.score.toFixed(3) +
+              " against " +
+              q.sample_count +
+              " separate caller clips. Genuine samples scored " +
+              q.genuine.toFixed(3) +
+              " on the same comparison.";
+          }
+        }
+        const textVoice = state.text_voices?.[selected] || {};
+        const building = ["building", "rendering"].includes(textVoice.state);
+        const textBusy = !!state.text_job || Object.values(state.text_voices || {}).some((v) => ["building", "rendering"].includes(v.state));
+        const resume = !textVoice.automatic && !textVoice.pending_update && textVoice.task === "build" && ["paused", "error"].includes(textVoice.state);
+        by("build-voice").disabled = busy || route || (!resume && !chosen?.text_eligible) || textBusy;
+        by("build-size").disabled = by("build-voice").disabled || resume;
+        if (resume) by("build-size").value = textVoice.mode;
+        by("build-voice").textContent = resume ? "Resume build" : "Build text voice";
+        by("build-voice").dataset.mode = resume ? "resume" : "new";
+        by("latest-build").hidden = !resume;
+        by("latest-build").disabled = busy || route || !chosen?.text_eligible || textBusy;
+        by("pause-build").hidden = !building || textVoice.automatic;
+        by("auto-label").hidden = !textVoice.available;
+        by("auto-updates").checked = !!chosen?.auto_update;
+        by("auto-updates").disabled = busy || !textVoice.available;
+        const needed = chosen?.update_after_clips || 6;
+        by("update-info").hidden = !textVoice.available || !chosen?.auto_update;
+        let update = building && textVoice.automatic
+          ? "Checking a new version. Your current voice is available."
+          : textVoice.pending_update ? "An update is queued. Your current voice is available."
+          : Math.min(chosen?.new_training_clips || 0, needed) + " of " + needed + " new training clips for the next check.";
+        if (textVoice.last_decision && textVoice.decision_reason && !textVoice.message?.includes(textVoice.decision_reason))
+          update += " Last check. " + textVoice.decision_reason;
+        by("update-info").textContent = update;
+        by("hear-alternate").hidden = !textVoice.alternate;
+        by("hear-alternate").textContent = textVoice.last_decision === "promoted" ? "Hear previous build" : "Hear candidate";
+        by("review-voice").hidden = !textVoice.available;
+        by("speak-line").disabled = busy || route || (textBusy && !state.text_job?.automatic) || !textVoice.available;
+        by("replay-line").hidden = !textVoice.rendered;
+        for (const [id, role, extension, available] of [
+          ["save-line", "tts", "wav", textVoice.rendered], ["save-voice", "profile", "pt", textVoice.available]
+        ]) {
+          const link = by(id);
+          link.hidden = !available;
+          if (available) {
+            link.href = "/audio/" + encodeURIComponent(state.call) + "/" + role + "/" + encodeURIComponent(selected);
+            link.download = "Speaker-" + selected + "." + extension;
+          } else link.removeAttribute("href");
+        }
+        by("text-info").textContent = (textVoice.message || (chosen?.text_eligible ? "Choose a quick preview or a full build to train this speaker." :
+          "Collect 30 seconds across six clear excerpts to build an English text voice.")) +
+          (typeof textVoice.similarity === "number" ? " Speaker similarity " + textVoice.similarity.toFixed(3) + " across " + textVoice.lines + " held-out lines." : "") +
+          (typeof textVoice.genuine === "number" ? " Genuine " + textVoice.genuine.toFixed(3) + " · word error " + Math.round(100 * textVoice.wer) + "%." : "");
+        by("listen").disabled = busy || !chosen || !chosen.clip_count;
+        by("preview").disabled =
+          frozen ||
+          !(ready(chosen) || chosen?.model_status === "needs_more_audio") ||
+          !state.calibrated ||
+          route;
+        by("preview").textContent = state.previewing ? "Rendering comparison…" : "Compare with my mic";
+        by("models").textContent = loaded
+          ? "Ready"
+          : state.setup.state === "error"
+            ? "Needs attention"
+            : "Setting up";
+        by("models").className = "tag " + (loaded ? "on" : state.setup.state === "error" ? "error" : "");
+        by("model-info").textContent = loaded
+          ? "Using " + (state.device === "mps" ? "Apple Metal" : "CPU") + " for voice conversion."
+          : state.setup.message;
+        by("retry").hidden = state.setup.state !== "error" && !state.analysis_errors.length;
+        by("record").disabled = frozen || route || by("mic").value === "";
+        by("micfile").disabled = frozen || route;
+        by("mic-info").textContent = state.calibrating
+          ? "Recording now. Speak normally for six seconds."
+          : state.calibration_error ||
+            (state.calibrated
+              ? "Mic sample saved."
+              : "Record a short phrase with the mic you will use in Discord.");
+        const cable = by("cable").selectedOptions[0];
+        const cabled = !!by("cable").value;
+        by("driver").hidden = devices.some((d) => d.virtual && d.outputs);
+        by("install-driver").disabled = busy || state.installing_driver;
+        by("driver-message").textContent = state.driver_message;
+        by("route-guide").textContent = cabled
+          ? "In Discord → Voice & Video, choose “" +
+            cable.text +
+            "” as Input Device. Keep your headphones as Output Device."
+          : "Install or select a virtual audio cable, then refresh devices.";
+        by("check").disabled = by("use").disabled =
+          frozen || !ready(chosen) || !state.calibrated || !cabled || by("mic").value === "";
+        by("use").textContent = route
+          ? String(state.route.speaker_id) === selected
+            ? "Voice in use"
+            : "Switch to " + (chosen ? chosen.name : "selected voice")
+          : "Use selected voice";
+        const sameDevices =
+          state.route.mic === Number(by("mic").value) && state.route.output === Number(by("cable").value);
+        if (route) by("check").disabled = true;
+        if (route && sameDevices && String(state.route.speaker_id) === selected) by("use").disabled = true;
+        by("normal").hidden = !route || state.route.mode === "microphone";
+        by("normal").disabled = frozen || !cabled || by("mic").value === "";
+        by("stop-route").hidden = !route;
+        const routed = voices.find((s) => s.id === String(state.route.speaker_id));
+        by("route-info").textContent =
+          state.route.state === "running"
+            ? (state.route.mode === "microphone"
+                ? "Your normal microphone"
+                : routed?.name || "The selected voice") +
+              " is routed to " +
+              state.route.output_name +
+              "."
+            : route || checked || state.route.state === "error"
+              ? state.route.message
+              : "Live output is off.";
+        if (state.route.timing) by("route-info").textContent += " " + state.route.timing;
+      }
+      function finishPreview() {
+        if (lineRequest && state.text_voices?.[lineRequest]?.state !== "rendering") {
+          const id = lineRequest;
+          lineRequest = null;
+          if (id === selected && state.text_voices?.[id]?.rendered) play("tts", id).catch((e) => msg(e.message, true));
+        }
+        if (previewRequest && !state.previewing) {
+          const id = previewRequest;
+          previewRequest = null;
+          if (state.preview === id) play("preview", id).catch((e) => msg(e.message, true));
+          else if (state.preview_error) msg(state.preview_error, true);
+        }
+      }
+      async function poll() {
+        if (checking || closed) return;
+        clearTimeout(pollTimer);
+        checking = true;
+        const version = stateVersion;
+        try {
+          const data = await (await request("/api/state")).text();
+          if (closed || version !== stateVersion) return;
+          if (data !== previousState) {
+            state = JSON.parse(data);
+            previousState = data;
+            draw();
+          }
+          finishPreview();
+        } catch (e) {
+          msg("The local studio is unavailable. Reopen Voice Lab if it has quit.", true);
+        } finally {
+          checking = false;
+          if (version !== stateVersion && !closed) poll();
+          else schedulePoll();
+        }
+      }
+      function schedulePoll() {
+        clearTimeout(pollTimer);
+        if (closed || (document.hidden && !notify)) return;
+        const active = state && (hot(state.capture.state) || hot(state.route.state) ||
+          state.analysis || state.previewing || state.calibrating || state.installing_driver || lineRequest || state.text_job ||
+          Object.values(state.text_voices || {}).some((v) => v.state === "building"));
+        const delay = document.hidden ? 15000 : active || state?.setup.state !== "ready" ? 1250 : 5000;
+        pollTimer = setTimeout(poll, delay);
+      }
+      async function act(name, extra = {}) {
+        if (busy || !state) return;
+        busy = true;
+        draw();
+        try {
+          await request("/api/" + name, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ call: state.call, ...extra }),
+          });
+          if (name === "quit") {
+            closed = true;
+            document.querySelector("main").inert = true;
+            by("quit").disabled = true;
+            msg("Voice Lab has quit. You can close this tab.");
+            return;
+          }
+          if (name === "text/speak") lineRequest = extra.speaker;
+          if (name === "preview") previewRequest = extra.speaker;
+          stateVersion++;
+          msg("");
+          await poll();
+        } catch (e) {
+          msg(e.message, true);
+        } finally {
+          busy = false;
+          draw();
+        }
+      }
+      async function discover() {
+        try {
+          devices = (await (await request("/api/devices")).json()).devices;
+          options(
+            by("mic"),
+            devices.filter((d) => d.inputs && !d.virtual).map((d) => [d.id, d.name]),
+            "Select a microphone",
+          );
+          options(
+            by("cable"),
+            devices.filter((d) => d.outputs && d.virtual).map((d) => [d.id, d.name]),
+            "Select a virtual cable",
+          );
+          draw();
+        } catch (e) {
+          msg(e.message, true);
+        }
+      }
+      by("capture").disabled = true;
+      by("capture").onclick = () => state && act(hot(state.capture.state) ? "detach" : "attach");
+      by("new").onclick = () => act("new");
+      by("sessions").onchange = (e) => act("select", { id: e.target.value });
+      by("quit").onclick = () => act("quit");
+      by("retry").onclick = () => act("retry");
+      by("listen").onclick = () => play("sample", selected).catch((e) => msg(e.message, true));
+      by("build-voice").onclick = () => act("text/build", {speaker: selected, mode: by("build-voice").dataset.mode === "resume" ? "resume" : by("build-size").value});
+      by("latest-build").onclick = () => act("text/build", {speaker: selected, mode: by("build-size").value});
+      by("auto-updates").onchange = (e) => act("text/updates", {speaker: selected, enabled: e.target.checked});
+      by("hear-alternate").onclick = () => play("alternate-review", selected).catch((e) => msg(e.message, true));
+      by("pause-build").onclick = () => act("text/pause");
+      by("review-voice").onclick = () => play("review", selected).catch((e) => msg(e.message, true));
+      by("speak-line").onclick = () => act("text/speak", {speaker: selected, text: by("voice-line").value});
+      by("replay-line").onclick = () => play("tts", selected).catch((e) => msg(e.message, true));
+      by("preview").onclick = () => act("preview", { speaker: selected });
+      by("record").onclick = () => act("mic/record", { mic: Number(by("mic").value) });
+      by("install-driver").onclick = () => act("cable/installer");
+      by("refresh").onclick = discover;
+      by("cable").onchange = by("mic").onchange = draw;
+      for (const [id, name] of [
+        ["check", "check"],
+        ["use", "route"],
+      ])
+        by(id).onclick = () =>
+          act(name, { speaker: selected, mic: Number(by("mic").value), output: Number(by("cable").value) });
+      by("normal").onclick = () =>
+        act("route/microphone", { mic: Number(by("mic").value), output: Number(by("cable").value) });
+      by("stop-route").onclick = () => act("route/stop");
+      by("voicefile").onchange = by("micfile").onchange = async (e) => {
+        const recording = e.target.id === "voicefile";
+        const file = e.target.files[0];
+        e.target.value = "";
+        if (!file) return;
+        const ext = file.name.split(".").pop().toLowerCase(),
+          type =
+            {
+              wav: "audio/wav",
+              m4a: "audio/mp4",
+              mp3: "audio/mpeg",
+              webm: "audio/webm",
+              ogg: "audio/ogg",
+              flac: "audio/flac",
+              aiff: "audio/aiff",
+            }[ext] || file.type;
+        if (file.size > 16777216) {
+          msg("Choose an audio file under 16 MiB.", true);
+          return;
+        }
+        busy = true;
+        draw();
+        try {
+          await request(recording ? "/api/voice/file" : "/api/mic/file", { method: "POST",
+            headers: { "Content-Type": type, "X-Voice-Call": state?.call || "new" }, body: file });
+          msg(recording ? "Recording added for speaker analysis." : "Mic sample saved.");
+          await poll();
+        } catch (e) {
+          msg(e.message, true);
+        } finally {
+          busy = false;
+          draw();
+        }
+      };
+      by("notify").hidden = !("Notification" in window);
+      by("notify").onclick = async () => {
+        try {
+          notify = (await Notification.requestPermission()) === "granted";
+          by("notify").textContent = notify ? "Notifications on" : "Notify when ready";
+          msg(
+            notify
+              ? "You’ll be notified when a new voice is ready."
+              : "Voice readiness is shown in the studio.",
+          );
+        } catch (e) {
+          msg("Voice readiness is shown in the studio.");
+        }
+      };
+      poll();
+      discover();
+      document.addEventListener("visibilitychange", () => {
+        if (document.hidden) schedulePoll();
+        else poll();
+      });
+    </script>
+  </body>
+</html>

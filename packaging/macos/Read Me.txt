@@ -1,0 +1,14 @@
+Voice Lab Beta for Mac
+
+1. Move Voice Lab Beta.app to Applications and open it on an Apple Silicon Mac running macOS 14 or later. The first launch downloads private audio tools and public speech models. Allow roughly 3 GB of free space for setup, plus space for your recordings.
+2. Start with Import recording for a local audio file up to two minutes and 16 MiB, or join the voice call in Discord's desktop app. In the studio, attach to Discord playback and grant the macOS Screen & System Audio Recording permission if prompted.
+3. Watch the speaker groups fill, review a speaker's clips, and test the voice with your mic. For live use, choose a virtual output in the studio and that same device as Discord's input. The studio offers the BlackHole installer if a virtual output is missing.
+4. For typed speech, select a speaker with 30 seconds across six clean excerpts. Choose Build text voice, then Compare original and generated. Try a new English line with Generate and play. Save WAV exports audio. Export voice saves your fitted model. Quick preview uses 12 teaching lines and Full build uses 128. Allow about 8 GB extra for the optional tools and public models. Starting live output pauses a build.
+5. Once you have a text voice, six new, distinct training clips from the same speaker queue an upgrade. The app compares both versions against the same real lines and keeps the better one. Your current voice stays available. You can turn off Improve automatically with new speech for any speaker.
+6. Close or minimize the studio window to keep audio and upgrades running in the background. Click the Dock icon to reopen it. Quit Voice Lab (⌘Q) to stop the local service. Queued upgrades resume on the next launch. Recordings and models stay in ~/Library/Application Support/Voice Lab Beta/.
+
+Opening a downloaded beta
+This beta uses an ad hoc Mac signature. If macOS blocks a copy you trust, follow Apple's Open Anyway instructions in System Settings, Privacy & Security:
+https://support.apple.com/guide/mac-help/open-a-mac-app-from-an-unknown-developer-mh40616/mac
+
+The Voice Lab app's View Setup Log button shows installation errors and startup progress.
